@@ -1,0 +1,33 @@
+name: Integration
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  verify:
+    runs-on: "ubuntu-latest"
+    name: "Verify modifies constraints."
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
+      - name: Setup Drupal
+        uses: bluehorndigital/setup-drupal@v1.0.3
+        with:
+          version: 10.0.x-dev
+          path: ~/drupal
+      - name: Require self
+        run: |
+          cd ~/drupal
+          composer require mglaman/composer-drupal-lenient *@dev
+      - name: Add non-compatible module release
+        run: |
+          cd ~/drupal
+          composer require drupal/token:1.10.0

@@ -20,7 +20,7 @@ use JsonSchema\Constraints\ConstraintInterface;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface {
 
-    public function modifyPackages(PrePoolCreateEvent $event)
+    public function modifyPackages(PrePoolCreateEvent $event): void
     {
         $packages = $event->getPackages();
         foreach ($packages as $package) {

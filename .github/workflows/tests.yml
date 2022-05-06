@@ -7,7 +7,7 @@ on:
 jobs:
   phpcs:
     runs-on: "ubuntu-latest"
-    name: Linting
+    name: PHPCS
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -19,11 +19,11 @@ jobs:
           tools: composer:v2
       - name: "Install dependencies"
         run: "composer update --no-progress --prefer-dist"
-      - name: "PHPStan"
+      - name: "PHPCS"
         run: "php vendor/bin/phpcs"
   phpstan:
     runs-on: "ubuntu-latest"
-    name: Linting
+    name: PHPStan
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -37,3 +37,19 @@ jobs:
         run: "composer update --no-progress --prefer-dist"
       - name: "PHPStan"
         run: "php vendor/bin/phpstan analyze"
+  phpunuit:
+    runs-on: "ubuntu-latest"
+    name: PHPUnit
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: xdebug
+          php-version: 8.1
+          tools: composer:v2
+      - name: "Install dependencies"
+        run: "composer update --no-progress --prefer-dist"
+      - name: "PHPUnit"
+        run: "php vendor/bin/phpunit"

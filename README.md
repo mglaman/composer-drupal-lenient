@@ -17,6 +17,26 @@ This subscribes to `PluginEvents::PRE_POOL_CREATE` and filters packages. This is
 not filter out packages. It rewrites the `drupal/core` constraint on any package with a type of `drupal-*`,
 excluding `drupal-core`.
 
+## Try it
+
+Setup a fresh Drupal 10 site with this plugin (remember to press `y` for the new `allow-plugins` prompt.)
+
+```shell
+composer create-project drupal/recommended-project:^10@alpha d10
+cd d10
+composer config minimum-stability dev
+composer config repositories.lenient-plugin vcs https://github.com/mglaman/composer-drupal-lenient.git
+composer require mglaman/composer-drupal-lenient
+```
+
+Now, add a module that does not have a D10 compatible release!
+
+```shell
+composer require drupal/token:1.10.0
+```
+
+🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 10 compatibility!
+
 ## Next
 
 - [ ] TESTS ✅

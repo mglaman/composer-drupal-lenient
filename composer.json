@@ -1,0 +1,27 @@
+{
+    "name": "mglaman/composer-drupal-lenient",
+    "type": "composer-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "ComposerDrupalLenient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Matt Glaman",
+            "email": "nmd.matt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "composer-plugin-api": "^2.0"
+    },
+    "extra": {
+        "class": "ComposerDrupalLenient\\Plugin"
+    },
+    "require-dev": {
+        "composer/composer": "^2.3",
+        "phpunit/phpunit": "^9.5"
+    }
+}

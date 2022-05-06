@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ComposerDrupalLenient;
 
@@ -18,8 +20,8 @@ use Composer\Repository\RepositoryManager;
 use Composer\Semver\Constraint\MatchAllConstraint;
 use JsonSchema\Constraints\ConstraintInterface;
 
-final class Plugin implements PluginInterface, EventSubscriberInterface {
-
+final class Plugin implements PluginInterface, EventSubscriberInterface
+{
     public function modifyPackages(PrePoolCreateEvent $event): void
     {
         $packages = $event->getPackages();
@@ -30,11 +32,11 @@ final class Plugin implements PluginInterface, EventSubscriberInterface {
             $requires = array_map(static function (Link $link) {
                 if ($link->getDescription() === Link::TYPE_REQUIRE && $link->getTarget() === 'drupal/core') {
                     return new Link(
-                      $link->getSource(),
-                      $link->getTarget(),
-                      new MatchAllConstraint(),
-                      $link->getDescription(),
-                      (string) (new MatchAllConstraint())
+                        $link->getSource(),
+                        $link->getTarget(),
+                        new MatchAllConstraint(),
+                        $link->getDescription(),
+                        (string)(new MatchAllConstraint())
                     );
                 }
                 return $link;
@@ -62,8 +64,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface {
     public static function getSubscribedEvents()
     {
         return [
-          PluginEvents::PRE_POOL_CREATE => 'modifyPackages',
+            PluginEvents::PRE_POOL_CREATE => 'modifyPackages',
         ];
     }
-
 }

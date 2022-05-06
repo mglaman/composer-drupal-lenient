@@ -5,6 +5,22 @@ on:
   pull_request:
     branches: [main]
 jobs:
+  phpcs:
+    runs-on: "ubuntu-latest"
+    name: Linting
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+      - name: "Install dependencies"
+        run: "composer update --no-progress --prefer-dist"
+      - name: "PHPStan"
+        run: "php vendor/bin/phpcs"
   phpstan:
     runs-on: "ubuntu-latest"
     name: Linting

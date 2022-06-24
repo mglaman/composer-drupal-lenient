@@ -39,6 +39,6 @@ composer require drupal/token:1.10.0
 
 ## Next
 
-- [ ] TESTS ✅
+- [x] TESTS ✅
 - [ ] Don't use MatchAllConstraint but set <= to current `drupal/core` locked constraint
-- [ ] Don't run on all Drupal extensions, only ones in an allowed list in root package's `extra`
+- [x] Don't run on all Drupal extensions, only ones in an allowed list in root package's `extra`

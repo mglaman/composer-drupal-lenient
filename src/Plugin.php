@@ -28,8 +28,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 
     public function activate(Composer $composer, IOInterface $io)
     {
-        // @todo set as property since we'll eventually need data from $composer.
-        $this->packageRequiresAdjuster = new PackageRequiresAdjuster();
+        $this->packageRequiresAdjuster = new PackageRequiresAdjuster($composer);
     }
 
     public function deactivate(Composer $composer, IOInterface $io)

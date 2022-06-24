@@ -73,3 +73,39 @@ jobs:
           cd ~/drupal
           composer require drupal/purge:3.x-dev#1342bb92b5304c6c316357d2c2c71a62a34d3eff -W
           composer show drupal/purge
+  d9_to_d10:
+    runs-on: "ubuntu-latest"
+    name: "D9 to D10"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
+      - name: Setup Drupal
+        uses: bluehorndigital/setup-drupal@v1.0.3
+        with:
+          version: ^9
+          path: ~/drupal
+      - name: Require self
+        run: |
+          cd ~/drupal
+          composer require mglaman/composer-drupal-lenient *@dev
+      - name: Configure allowed list
+        run: |
+          cd ~/drupal
+          composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/purge"]'
+      - name: Add module release
+        run: |
+          cd ~/drupal
+          composer require drupal/purge:3.x-dev#1342bb92b5304c6c316357d2c2c71a62a34d3eff -W
+          composer show drupal/purge
+      - name: Upgrade Drupal
+        run: |
+          cd ~/drupal
+          composer require drupal/core-recommended:10.0.x-dev drupal/core-dev:10.0.x drush/drush:^11.0 guzzlehttp/guzzle:^7.0 --with-all-dependencies --no-update
+          composer update --no-progress --prefer-dist

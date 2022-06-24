@@ -81,16 +81,6 @@ class PackageRequiresAdjusterTest extends TestCase
         $root = new RootPackage('foo', '1.0', '1.0');
         $composer->setPackage($root);
         $adjuster = new PackageRequiresAdjuster($composer);
-        if ($coreVersion !== null) {
-            $corePackage = new Package('foo', $coreVersion, $coreVersion);
-            $corePackage->setType('drupal-core');
-            $locker = $this->createStub(Locker::class);
-            $lockedRepository = $this->createStub(LockArrayRepository::class);
-            $lockedRepository->method('getPackages')->willReturn([$corePackage]);
-            $locker->method('getLockedRepository')->willReturn($lockedRepository);
-            $composer->setLocker($locker);
-            $adjuster->setDrupalCoreConstraint();
-        }
         $originalDrupalCoreConstraint = new MultiConstraint([
             new Constraint('>=', '8.0'),
             new Constraint('>=', '9.0'),
@@ -137,7 +127,7 @@ class PackageRequiresAdjusterTest extends TestCase
     {
         return [
             [null, '^8 || ^9 || ^10'],
-            ['10.0.0-alpha5', '<= 10.0.0-alpha5'],
+            ['10.0.0-alpha5', '^8 || ^9 || ^10'],
         ];
     }
 }

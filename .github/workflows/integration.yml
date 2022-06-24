@@ -109,3 +109,7 @@ jobs:
           cd ~/drupal
           composer require drupal/core-recommended:^10@alpha drupal/core-dev:^10@alpha drupal/core-composer-scaffold:^10@alpha drupal/core-project-message:^10@alpha drush/drush:^11.0 guzzlehttp/guzzle:^7.0 --with-all-dependencies --no-update
           composer update --no-progress --prefer-dist
+      - name: Show module
+        run: |
+          cd ~/drupal
+          composer show drupal/purge

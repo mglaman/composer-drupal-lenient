@@ -25,7 +25,6 @@ Setup a fresh Drupal 10 site with this plugin (remember to press `y` for the new
 composer create-project drupal/recommended-project:^10@alpha d10
 cd d10
 composer config minimum-stability dev
-composer config repositories.lenient-plugin vcs https://github.com/mglaman/composer-drupal-lenient.git
 composer require mglaman/composer-drupal-lenient
 ```
 

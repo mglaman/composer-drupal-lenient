@@ -29,6 +29,14 @@ composer config repositories.lenient-plugin vcs https://github.com/mglaman/compo
 composer require mglaman/composer-drupal-lenient
 ```
 
+The plugin only works against specified packages. To allow a package to have a lenient Drupal core version constraint,
+you must add it to `extra.drupal-lenient.allowed-list`. The following is an example to add Token via the command line 
+with `composer config`
+
+```shell
+composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/token"]'
+```
+
 Now, add a module that does not have a D10 compatible release!
 
 ```shell

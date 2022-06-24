@@ -40,17 +40,11 @@ jobs:
       - name: Add non-compatible module release
         run: |
           cd ~/drupal
-          composer require drupal/token:1.10.0
+          composer require drupal/token:1.10.0 -W
           composer show drupal/token
   purge:
     runs-on: "ubuntu-latest"
-    name: "purge 1342bb92b5304c6c316357d2c2c71a62a34d3eff"
-    strategy:
-      matrix:
-        drupal:
-          - "10.0.x-dev"
-          - "10.0.0-alpha4"
-          - "^10.0@alpha"
+    name: "purge#1342bb92"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -77,5 +71,5 @@ jobs:
       - name: Add non-compatible module release
         run: |
           cd ~/drupal
-          composer require drupal/purge:3.x-dev#1342bb92b5304c6c316357d2c2c71a62a34d3eff
+          composer require drupal/purge:3.x-dev#1342bb92b5304c6c316357d2c2c71a62a34d3eff -W
           composer show drupal/purge

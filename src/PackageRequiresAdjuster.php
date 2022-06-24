@@ -27,7 +27,7 @@ final class PackageRequiresAdjuster
         $locker = $this->composer->getLocker();
         foreach ($locker->getLockedRepository()->getPackages() as $package) {
             if ($package->getType() === 'drupal-core') {
-                $this->drupalCoreConstraint = new Constraint('<=', $package->getVersion());
+                //$this->drupalCoreConstraint = new Constraint('<=', $package->getVersion());
             }
         }
     }

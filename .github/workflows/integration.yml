@@ -7,7 +7,7 @@ on:
 jobs:
   verify:
     runs-on: "ubuntu-latest"
-    name: "Verify modified constraints."
+    name: "verify"
     strategy:
       matrix:
         drupal:
@@ -40,5 +40,36 @@ jobs:
       - name: Add non-compatible module release
         run: |
           cd ~/drupal
-          composer require drupal/token:1.10.0
+          composer require drupal/token:1.10.0 -W
           composer show drupal/token
+  purge:
+    runs-on: "ubuntu-latest"
+    name: "purge#1342bb92"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
+      - name: Setup Drupal
+        uses: bluehorndigital/setup-drupal@v1.0.3
+        with:
+          version: ^10.0@alpha
+          path: ~/drupal
+      - name: Require self
+        run: |
+          cd ~/drupal
+          composer require mglaman/composer-drupal-lenient *@dev
+      - name: Configure allowed list
+        run: |
+          cd ~/drupal
+          composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/purge"]'
+      - name: Add non-compatible module release
+        run: |
+          cd ~/drupal
+          composer require drupal/purge:3.x-dev#1342bb92b5304c6c316357d2c2c71a62a34d3eff -W
+          composer show drupal/purge

@@ -15,7 +15,7 @@ See [Add a composer plugin that supports 'composer require-lenient' to support m
 
 This subscribes to `PluginEvents::PRE_POOL_CREATE` and filters packages. This is inspired by `symfony/flex`, but it does
 not filter out packages. It rewrites the `drupal/core` constraint on any package with a type of `drupal-*`,
-excluding `drupal-core`.
+excluding `drupal-core`. The constraint is set to a maximum version of the installed `drupal/core` package version.
 
 ## Try it
 
@@ -36,9 +36,3 @@ composer require drupal/token:1.10.0
 ```
 
 🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 10 compatibility!
-
-## Next
-
-- [x] TESTS ✅
-- [ ] Don't use MatchAllConstraint but set <= to current `drupal/core` locked constraint
-- [x] Don't run on all Drupal extensions, only ones in an allowed list in root package's `extra`

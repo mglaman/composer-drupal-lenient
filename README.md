@@ -15,7 +15,7 @@ See [Add a composer plugin that supports 'composer require-lenient' to support m
 
 This subscribes to `PluginEvents::PRE_POOL_CREATE` and filters packages. This is inspired by `symfony/flex`, but it does
 not filter out packages. It rewrites the `drupal/core` constraint on any package with a type of `drupal-*`,
-excluding `drupal-core`. The constraint is set to a maximum version of the installed `drupal/core` package version.
+excluding `drupal-core`. The constraint is set to `'^8 || ^9 || ^10'` for `drupal/core`.
 
 ## Try it
 

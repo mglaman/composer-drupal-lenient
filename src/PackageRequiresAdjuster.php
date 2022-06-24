@@ -11,6 +11,8 @@ use Composer\Package\PackageInterface;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MatchAllConstraint;
+use Composer\Semver\Constraint\MultiConstraint;
+use Composer\Semver\VersionParser;
 
 final class PackageRequiresAdjuster
 {
@@ -19,17 +21,8 @@ final class PackageRequiresAdjuster
     public function __construct(
         private readonly Composer $composer
     ) {
-        $this->drupalCoreConstraint = new MatchAllConstraint();
-    }
-
-    public function setDrupalCoreConstraint(): void
-    {
-        $locker = $this->composer->getLocker();
-        foreach ($locker->getLockedRepository()->getPackages() as $package) {
-            if ($package->getType() === 'drupal-core') {
-                $this->drupalCoreConstraint = new Constraint('<=', $package->getVersion());
-            }
-        }
+        $this->drupalCoreConstraint = (new VersionParser())
+            ->parseConstraints('^8 || ^9 || ^10');
     }
 
     public function applies(PackageInterface $package): bool

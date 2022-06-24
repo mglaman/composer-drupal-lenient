@@ -18,6 +18,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     public function modifyPackages(PrePoolCreateEvent $event): void
     {
         $packages = $event->getPackages();
+        $this->packageRequiresAdjuster->setDrupalCoreConstraint($packages);
         foreach ($packages as $package) {
             if ($this->packageRequiresAdjuster->applies($package)) {
                 $this->packageRequiresAdjuster->adjust($package);
@@ -26,20 +27,20 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $event->setPackages($packages);
     }
 
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
         $this->packageRequiresAdjuster = new PackageRequiresAdjuster($composer);
     }
 
-    public function deactivate(Composer $composer, IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io): void
     {
     }
 
-    public function uninstall(Composer $composer, IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io): void
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PluginEvents::PRE_POOL_CREATE => 'modifyPackages',

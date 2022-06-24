@@ -5,8 +5,10 @@ namespace ComposerDrupalLenient;
 use Composer\Composer;
 use Composer\Package\CompletePackage;
 use Composer\Package\Link;
+use Composer\Package\Locker;
 use Composer\Package\Package;
 use Composer\Package\RootPackage;
+use Composer\Repository\LockArrayRepository;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MultiConstraint;
@@ -85,7 +87,12 @@ class PackageRequiresAdjusterTest extends TestCase
         if ($coreVersion !== null) {
             $corePackage = new Package('foo', $coreVersion, $coreVersion);
             $corePackage->setType('drupal-core');
-            $adjuster->setDrupalCoreConstraint([$corePackage]);
+            $locker = $this->createStub(Locker::class);
+            $lockedRepository = $this->createStub(LockArrayRepository::class);
+            $lockedRepository->method('getPackages')->willReturn([$corePackage]);
+            $locker->method('getLockedRepository')->willReturn($lockedRepository);
+            $composer->setLocker($locker);
+            $adjuster->setDrupalCoreConstraint();
         }
         $originalDrupalCoreConstraint = new MultiConstraint([
             new Constraint('>=', '8.0'),

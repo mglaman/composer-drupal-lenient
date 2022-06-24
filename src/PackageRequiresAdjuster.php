@@ -22,12 +22,10 @@ final class PackageRequiresAdjuster
         $this->drupalCoreConstraint = new MatchAllConstraint();
     }
 
-    /**
-     * @param \Composer\Package\BasePackage[] $packages
-     */
-    public function setDrupalCoreConstraint(array $packages): void
+    public function setDrupalCoreConstraint(): void
     {
-        foreach ($packages as $package) {
+        $locker = $this->composer->getLocker();
+        foreach ($locker->getLockedRepository()->getPackages() as $package) {
             if ($package->getType() === 'drupal-core') {
                 $this->drupalCoreConstraint = new Constraint('<=', $package->getVersion());
             }

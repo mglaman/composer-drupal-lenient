@@ -10,9 +10,7 @@ use Composer\Package\Package;
 use Composer\Package\RootPackage;
 use Composer\Repository\LockArrayRepository;
 use Composer\Semver\Constraint\Constraint;
-use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MultiConstraint;
-use Composer\Semver\VersionParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -74,7 +72,6 @@ class PackageRequiresAdjusterTest extends TestCase
     /**
      * @covers ::__construct
      * @covers ::adjust
-     * @covers ::setDrupalCoreConstraint
      *
      * @dataProvider provideAdjustData
      */
@@ -139,7 +136,7 @@ class PackageRequiresAdjusterTest extends TestCase
     public function provideAdjustData(): array
     {
         return [
-            [null, '*'],
+            [null, '^8 || ^9 || ^10'],
             ['10.0.0-alpha5', '<= 10.0.0-alpha5'],
         ];
     }

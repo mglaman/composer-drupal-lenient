@@ -17,8 +17,6 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 
     public function modifyPackages(PrePoolCreateEvent $event): void
     {
-        $this->packageRequiresAdjuster->setDrupalCoreConstraint();
-
         $packages = $event->getPackages();
         foreach ($packages as $package) {
             if ($this->packageRequiresAdjuster->applies($package)) {

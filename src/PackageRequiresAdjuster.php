@@ -8,15 +8,30 @@ use Composer\Composer;
 use Composer\Package\CompletePackage;
 use Composer\Package\Link;
 use Composer\Package\PackageInterface;
-use Composer\Package\RootPackageInterface;
+use Composer\Semver\Constraint\Constraint;
 use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MatchAllConstraint;
 
 final class PackageRequiresAdjuster
 {
+    private ConstraintInterface $drupalCoreConstraint;
+
     public function __construct(
         private readonly Composer $composer
     ) {
+        $this->drupalCoreConstraint = new MatchAllConstraint();
+    }
+
+    /**
+     * @param \Composer\Package\BasePackage[] $packages
+     */
+    public function setDrupalCoreConstraint(array $packages): void
+    {
+        foreach ($packages as $package) {
+            if ($package->getType() === 'drupal-core') {
+                $this->drupalCoreConstraint = new Constraint('<=', $package->getVersion());
+            }
+        }
     }
 
     public function applies(PackageInterface $package): bool
@@ -40,13 +55,12 @@ final class PackageRequiresAdjuster
     {
         $requires = array_map(function (Link $link) {
             if ($link->getDescription() === Link::TYPE_REQUIRE && $link->getTarget() === 'drupal/core') {
-                $drupalCoreConstraint = $this->getDrupalCoreConstraint();
                 return new Link(
                     $link->getSource(),
                     $link->getTarget(),
-                    $drupalCoreConstraint,
+                    $this->drupalCoreConstraint,
                     $link->getDescription(),
-                    $drupalCoreConstraint->getPrettyString()
+                    $this->drupalCoreConstraint->getPrettyString()
                 );
             }
             return $link;
@@ -55,11 +69,5 @@ final class PackageRequiresAdjuster
         if ($package instanceof CompletePackage) {
             $package->setRequires($requires);
         }
-    }
-
-    private function getDrupalCoreConstraint(): ConstraintInterface
-    {
-        // @todo infer from root package drupal/core || drupal/core-recommended as max, no min.
-        return new MatchAllConstraint();
     }
 }

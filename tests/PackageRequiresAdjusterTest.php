@@ -8,7 +8,9 @@ use Composer\Package\Link;
 use Composer\Package\Package;
 use Composer\Package\RootPackage;
 use Composer\Semver\Constraint\Constraint;
+use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MultiConstraint;
+use Composer\Semver\VersionParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -70,14 +72,21 @@ class PackageRequiresAdjusterTest extends TestCase
     /**
      * @covers ::__construct
      * @covers ::adjust
-     * @covers ::getDrupalCoreConstraint
+     * @covers ::setDrupalCoreConstraint
+     *
+     * @dataProvider provideAdjustData
      */
-    public function testAdjust(): void
+    public function testAdjust(?string $coreVersion, string $expectedCoreConstraintString): void
     {
         $composer = new Composer();
         $root = new RootPackage('foo', '1.0', '1.0');
         $composer->setPackage($root);
         $adjuster = new PackageRequiresAdjuster($composer);
+        if ($coreVersion !== null) {
+            $corePackage = new Package('foo', $coreVersion, $coreVersion);
+            $corePackage->setType('drupal-core');
+            $adjuster->setDrupalCoreConstraint([$corePackage]);
+        }
         $originalDrupalCoreConstraint = new MultiConstraint([
             new Constraint('>=', '8.0'),
             new Constraint('>=', '9.0'),
@@ -102,13 +111,29 @@ class PackageRequiresAdjusterTest extends TestCase
             )
         ]);
         $adjuster->adjust($package);
-        self::assertNotEquals(
-            $originalDrupalCoreConstraint->getPrettyString(),
+        self::assertEquals(
+            $expectedCoreConstraintString,
             $package->getRequires()['drupal/core']->getConstraint()->getPrettyString()
         );
         self::assertSame(
             $originalTokenConstraint,
             $package->getRequires()['drupal/token']->getConstraint()
         );
+        if ($coreVersion !== null) {
+            self::assertTrue(
+                (new Constraint('==', $coreVersion))->matches($package->getRequires()['drupal/core']->getConstraint())
+            );
+        }
+    }
+
+    /**
+     * @return array<int, array<null|string>>
+     */
+    public function provideAdjustData(): array
+    {
+        return [
+            [null, '*'],
+            ['10.0.0-alpha5', '<= 10.0.0-alpha5'],
+        ];
     }
 }

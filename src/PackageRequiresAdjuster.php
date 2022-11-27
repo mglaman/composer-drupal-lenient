@@ -27,9 +27,10 @@ final class PackageRequiresAdjuster
 
     public function applies(PackageInterface $package): bool
     {
+        $type = $package->getType();
         if (
-            $package->getType() === 'drupal-core'
-            || !str_starts_with($package->getType(), 'drupal-')
+            $type === 'drupal-core'
+            || (!str_starts_with($type, 'drupal-') && $type !== 'metapackage')
         ) {
             return false;
         }

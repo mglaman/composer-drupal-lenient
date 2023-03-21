@@ -64,8 +64,10 @@ class PackageRequiresAdjusterTest extends TestCase
             ['foo', 'drupal-console', true],
             ['foo', 'drupal-console-language', true],
             ['foo', 'drupal-config', true],
+            ['foo', 'metapackage', true],
             ['bar', 'drupal-module', false],
             ['baz', 'drupal-theme', false],
+            ['baz', 'metapackage', false]
         ];
     }
 

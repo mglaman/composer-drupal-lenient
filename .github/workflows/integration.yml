@@ -25,10 +25,14 @@ jobs:
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
       - name: Setup Drupal
-        uses: bluehorndigital/setup-drupal@v1.0.3
+        uses: bluehorndigital/setup-drupal@v1.0.4
         with:
           version: "${{ matrix.drupal }}"
           path: ~/drupal
+          allow_plugins: |
+            drupal/core-composer-scaffold
+            drupal/core-project-message
+            mglaman/composer-drupal-lenient
       - name: Require self
         run: |
           cd ~/drupal
@@ -56,10 +60,12 @@ jobs:
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
       - name: Setup Drupal
-        uses: bluehorndigital/setup-drupal@v1.0.3
+        uses: bluehorndigital/setup-drupal@v1.0.4
         with:
           version: ^10.0@alpha
           path: ~/drupal
+          allow_plugins: |
+            mglaman/composer-drupal-lenient
       - name: Require self
         run: |
           cd ~/drupal
@@ -87,10 +93,12 @@ jobs:
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
       - name: Setup Drupal
-        uses: bluehorndigital/setup-drupal@v1.0.3
+        uses: bluehorndigital/setup-drupal@v1.0.4
         with:
           version: ^9
           path: ~/drupal
+          allow_plugins: |
+            mglaman/composer-drupal-lenient
       - name: Require self
         run: |
           cd ~/drupal

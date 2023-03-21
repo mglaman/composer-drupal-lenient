@@ -31,6 +31,7 @@ jobs:
           path: ~/drupal
           allow_plugins: |
             drupal/core-composer-scaffold
+            drupal/core-project-message
             mglaman/composer-drupal-lenient
       - name: Require self
         run: |

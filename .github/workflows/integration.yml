@@ -30,6 +30,7 @@ jobs:
           version: "${{ matrix.drupal }}"
           path: ~/drupal
           allow_plugins: |
+            drupal/core-composer-scaffold
             mglaman/composer-drupal-lenient
       - name: Require self
         run: |

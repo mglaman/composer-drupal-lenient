@@ -156,6 +156,10 @@ jobs:
           cd ~/drupal
           rm composer.lock
           rm -rf vendor
+      - name: Require self globally
+        run: |
+          cd ~/drupal
+          composer global require mglaman/composer-drupal-lenient *@dev
       - name: Add non-compatible module release
         run: |
           cd ~/drupal

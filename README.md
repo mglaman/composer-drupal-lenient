@@ -43,3 +43,15 @@ composer require drupal/token:1.10.0
 ```
 
 🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 10 compatibility!
+
+## Support when `composer.lock` removed
+
+This plugin must be installed globally if your project's `composer.lock` file is removed.
+
+```shell
+composer global config --no-plugins allow-plugins.mglaman/composer-drupal-lenient true
+composer global require mglaman/composer-drupal-lenient
+```
+
+**Warning**: this means the plugin will run on all Composer commands. This is not recommended, but it is the only way 
+the plugin can work when `composer.lock` is removed.

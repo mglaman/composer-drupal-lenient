@@ -121,3 +121,48 @@ jobs:
         run: |
           cd ~/drupal
           composer show drupal/purge
+  without_lock_file:
+    runs-on: "ubuntu-latest"
+    name: "without lock file"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
+      - name: Setup Drupal
+        uses: bluehorndigital/setup-drupal@v1.0.4
+        with:
+          version: "^10"
+          path: ~/drupal
+          allow_plugins: |
+            drupal/core-composer-scaffold
+            drupal/core-project-message
+            mglaman/composer-drupal-lenient
+      - name: Require self
+        run: |
+          cd ~/drupal
+          composer require mglaman/composer-drupal-lenient *@dev
+      - name: Configure allowed list
+        run: |
+          cd ~/drupal
+          composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/token"]'
+      - name: Remove lock file
+        run: |
+          cd ~/drupal
+          rm composer.lock
+          rm -rf vendor
+      - name: Require self globally
+        run: |
+          cd ~/drupal
+          composer global config --no-plugins allow-plugins.mglaman/composer-drupal-lenient true
+          composer global require mglaman/composer-drupal-lenient *@dev
+      - name: Add non-compatible module release
+        run: |
+          cd ~/drupal
+          composer require drupal/token:1.10.0 -W
+          composer show drupal/token

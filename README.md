@@ -34,9 +34,6 @@ composer require drupal/core-recommended:^10 drupal/core-composer-scaffold:^10 -
 Voila! It's basically cheating and letting Composer "I know it's not technically compatible with Drupal 10, just download it anyway"
 There's one more step. You'll need to [patch the info.yml](https://docs.cweagans.net/composer-patches/usage/defining-patches/) file on the contributed module, drupal/token in this case, to ensure that the
 module can remain installed to the Drupal database. It is *very* likely that this patch already exists in the module's issue queue. 
-You can add it with a single command:
-
-
 
 ## How
 

@@ -22,7 +22,7 @@ final class PackageRequiresAdjuster
         private readonly Composer $composer
     ) {
         $this->drupalCoreConstraint = (new VersionParser())
-            ->parseConstraints('^8 || ^9 || ^10');
+            ->parseConstraints('^8 || ^9 || ^10 || ^11');
     }
 
     public function applies(PackageInterface $package): bool

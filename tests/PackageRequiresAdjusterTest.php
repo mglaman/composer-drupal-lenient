@@ -86,6 +86,7 @@ class PackageRequiresAdjusterTest extends TestCase
         $originalDrupalCoreConstraint = new MultiConstraint([
             new Constraint('>=', '8.0'),
             new Constraint('>=', '9.0'),
+            new Constraint('>=', '10.0'),
         ]);
         $originalTokenConstraint = new Constraint('>=', '1.10.0');
         $package = new CompletePackage('foo', '1.0', '1.0');
@@ -128,8 +129,8 @@ class PackageRequiresAdjusterTest extends TestCase
     public function provideAdjustData(): array
     {
         return [
-            [null, '^8 || ^9 || ^10'],
-            ['10.0.0-alpha5', '^8 || ^9 || ^10'],
+            [null, '^8 || ^9 || ^10 || ^11'],
+            ['10.0.0-alpha5', '^8 || ^9 || ^10 || ^11'],
         ];
     }
 }

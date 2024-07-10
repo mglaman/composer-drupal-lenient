@@ -46,7 +46,6 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             }
         }
         $event->setPackages($packages);
-
     }
 
     public function addSystemHookImplementation(PackageEvent $event): void

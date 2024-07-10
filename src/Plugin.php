@@ -55,10 +55,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
-        $operation = $event->getOperation();
-        assert($operation instanceof InstallOperation || $operation instanceof UpdateOperation);
-
-        $package = $this->getPackageFromOperation($operation);
+        $package = $this->getPackageFromOperation($event->getOperation());
         if ($package->getType() === 'drupal-core') {
             $systemModulePath = $this->composer->getInstallationManager()->getInstallPath($package) . '/modules/system/system.module';
             $systemModule = file_get_contents($systemModulePath);
@@ -92,14 +89,8 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         ];
     }
 
-    private function getPackageFromOperation(OperationInterface $operation): ?PackageInterface
+    private function getPackageFromOperation(InstallOperation|UpdateOperation $operation): PackageInterface
     {
-        if ($operation instanceof InstallOperation) {
-            return $operation->getPackage();
-        }
-        elseif ($operation instanceof UpdateOperation) {
-            return $operation->getTargetPackage();
-        }
-        throw new \Exception('Unknown operation: ' . get_class($operation));
+        return $operation instanceof InstallOperation ? $operation->getPackage() : $operation->getTargetPackage();
     }
 }

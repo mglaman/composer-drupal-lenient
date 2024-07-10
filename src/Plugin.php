@@ -12,11 +12,9 @@ use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
-use Composer\Package\Package;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
-use Composer\Plugin\PostFileDownloadEvent;
 use Composer\Plugin\PrePoolCreateEvent;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface

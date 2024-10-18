@@ -1,6 +1,6 @@
-# mglaman/composer-drupal-lenient
+# Drupal Lenient Composer Plugin
 
-Lenient with it, Drupal 10 with it.
+Lenient with it, Drupal 11 with it.
 
 ## Why?
 
@@ -9,7 +9,9 @@ was done to remove a barrier with getting extensions installed via Composer to w
 
 We hit the same problem, again. At DrupalCon Portland we sat down and decided a Composer plugin is the best approach.
 
-See [Add a composer plugin that supports 'composer require-lenient' to support major version transitions](https://www.drupal.org/project/drupal/issues/3267143)
+See [Add a composer plugin that supports 'composer require-lenient' to support major version transitions](https://www.drupal.org/project/drupal/issues/3267143).
+
+Drupal documentation page: [Using Drupal's Lenient Composer Endpoint](https://www.drupal.org/docs/develop/using-composer/using-drupals-lenient-composer-endpoint).
 
 ## How
 
@@ -19,30 +21,35 @@ excluding `drupal-core`. The constraint is set to `'^8 || ^9 || ^10 || ^11'` for
 
 ## Try it
 
-Setup a fresh Drupal 10 site with this plugin (remember to press `y` for the new `allow-plugins` prompt.)
+Set up a fresh Drupal 11 site with this plugin (remember to press `y` for the new `allow-plugins` prompt.)
 
 ```shell
-composer create-project drupal/recommended-project:^10@alpha d10
-cd d10
-composer config minimum-stability dev
+composer create-project drupal/recommended-project d11
+cd d11
 composer require mglaman/composer-drupal-lenient
 ```
 
 The plugin only works against specified packages. To allow a package to have a lenient Drupal core version constraint,
-you must add it to `extra.drupal-lenient.allowed-list`. The following is an example to add Token via the command line 
+you must add it to `extra.drupal-lenient.allowed-list`. The following is an example to add Simplenews via the command line 
 with `composer config`
 
 ```shell
-composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/token"]'
+composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/simplenews"]'
 ```
 
-Now, add a module that does not have a D10 compatible release!
+Now, add a module that does not have a Drupal 11 compatible release!
 
 ```shell
-composer require drupal/token:1.10.0
+composer require drupal/simplenews
 ```
 
-🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 10 compatibility!
+🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 11 compatibility!
+
+For a quick start, allow installation by adding the latest version in the module `*.info.yml` file:
+
+```shell
+core_version_requirement: ^9.3 || ^10 || ^11
+```
 
 ## Support when `composer.lock` removed
 

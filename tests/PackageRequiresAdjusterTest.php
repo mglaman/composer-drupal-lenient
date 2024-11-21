@@ -43,6 +43,27 @@ class PackageRequiresAdjusterTest extends TestCase
     }
 
     /**
+     * @covers ::__construct
+     * @covers ::applies
+     * @dataProvider provideTypes
+     */
+    public function testAppliesWithAllowsAll(string $name, string $type, ): void {
+        $root = new RootPackage('foo', '1.0', '1.0');
+        $root->setExtra([
+            'drupal-lenient' => [
+                'allow-all' => true,
+            ]
+        ]);
+        $composer = new Composer();
+        $composer->setPackage($root);
+
+        $adjuster = new PackageRequiresAdjuster($composer);
+        $package = new Package($name, '1.0', '1.0');
+        $package->setType($type);
+        self::assertTrue($adjuster->applies($package));
+    }
+
+    /**
      * @return array<int, array<int, string|bool>>
      */
     public function provideTypes(): array

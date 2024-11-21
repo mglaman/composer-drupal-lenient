@@ -34,8 +34,14 @@ final class PackageRequiresAdjuster
         ) {
             return false;
         }
+        /**
+         * @var array{drupal-lenient?: array{allow-all?: bool, allowed-list?: list<string>|mixed}} $extra
+         */
         $extra = $this->composer->getPackage()->getExtra();
-        // @phpstan-ignore-next-line
+        $allowAll = $extra['drupal-lenient']['allow-all'] ?? false;
+        if ($allowAll) {
+            return true;
+        }
         $allowedList = $extra['drupal-lenient']['allowed-list'] ?? [];
         if (!is_array($allowedList) || count($allowedList) === 0) {
             return false;

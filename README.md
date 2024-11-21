@@ -55,6 +55,16 @@ Alternatively, manually add the latest version in the module `*.info.yml` file:
 core_version_requirement: ^9.3 || ^10 || ^11
 ```
 
+## Allowing all packages
+
+If you want to allow all packages to have a lenient Drupal core version constraint, you can set `extra.drupal-lenient.allow-all` to `true`.
+
+```shell
+composer config --json extra.drupal-lenient.allow-all true
+```
+
+Using `allow-all` allows you to install any package without needing to add it to the `allowed-list`.
+
 ## Support when `composer.lock` removed
 
 This plugin must be installed globally if your project's `composer.lock` file is removed.

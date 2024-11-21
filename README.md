@@ -37,7 +37,7 @@ with `composer config`
 composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/simplenews"]'
 ```
 
-Now, add a module that does [not have a Drupal 11 compatible]([url](https://dev.acquia.com/drupal11/deprecation_status/projects?next_step=Fix%20deprecation%20errors%20found)) release!
+Now, add a module that does [not have a Drupal 11 compatible](https://dev.acquia.com/drupal11/deprecation_status/projects?next_step=Fix%20deprecation%20errors%20found) release!
 
 ```shell
 composer require drupal/simplenews

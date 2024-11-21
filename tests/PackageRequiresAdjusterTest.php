@@ -47,7 +47,8 @@ class PackageRequiresAdjusterTest extends TestCase
      * @covers ::applies
      * @dataProvider provideTypes
      */
-    public function testAppliesWithAllowsAll(string $name, string $type, ): void {
+    public function testAppliesWithAllowsAll(string $name, string $type): void
+    {
         $root = new RootPackage('foo', '1.0', '1.0');
         $root->setExtra([
             'drupal-lenient' => [
@@ -60,7 +61,13 @@ class PackageRequiresAdjusterTest extends TestCase
         $adjuster = new PackageRequiresAdjuster($composer);
         $package = new Package($name, '1.0', '1.0');
         $package->setType($type);
-        self::assertTrue($adjuster->applies($package));
+
+        $expected = !(($type === 'library' || $type === 'drupal-core'));
+        self::assertEquals(
+            $expected,
+            $adjuster->applies($package),
+            "Package $name of type $type should be allowed."
+        );
     }
 
     /**

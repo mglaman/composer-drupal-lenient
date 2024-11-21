@@ -47,7 +47,7 @@ composer require drupal/simplenews
 
 For a quick start, allow installing the module by installing [Backward Compatibility](https://www.drupal.org/project/backward_compatibility):
 
-> "Backward Compatibility allows you to install old Drupal modules in current Drupal."
+> Backward Compatibility allows you to install old Drupal modules in current Drupal.
 
 Alternatively, manually add the latest version in the module `*.info.yml` file:
 

@@ -17,7 +17,7 @@ Drupal documentation page: [Using Drupal's Lenient Composer Endpoint](https://ww
 
 This subscribes to `PluginEvents::PRE_POOL_CREATE` and filters packages. This is inspired by `symfony/flex`, but it does
 not filter out packages. It rewrites the `drupal/core` constraint on any package with a type of `drupal-*`,
-excluding `drupal-core`. The constraint is set to `'^8 || ^9 || ^10 || ^11'` for `drupal/core`.
+excluding `drupal-core`. The constraint is set to `'^8 || ^9 || ^10 || ^11 || ^12'` for `drupal/core`.
 
 ## Try it
 
@@ -37,7 +37,7 @@ with `composer config`
 composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/simplenews"]'
 ```
 
-Now, add a module that does not have a Drupal 11 compatible release!
+Now, add a module that does [not have a Drupal 11 compatible](https://dev.acquia.com/drupal11/deprecation_status/projects?next_step=Fix%20deprecation%20errors%20found) release!
 
 ```shell
 composer require drupal/simplenews
@@ -45,7 +45,11 @@ composer require drupal/simplenews
 
 🥳 Now you can use [cweagans/composer-patches](https://github.com/cweagans/composer-patches) to patch the module for Drupal 11 compatibility!
 
-For a quick start, allow installation by adding the latest version in the module `*.info.yml` file:
+For a quick start, allow installing the module by installing [Backward Compatibility](https://www.drupal.org/project/backward_compatibility):
+
+> Backward Compatibility allows you to install old Drupal modules in current Drupal.
+
+Alternatively, manually add the latest version in the module `*.info.yml` file:
 
 ```shell
 core_version_requirement: ^9.3 || ^10 || ^11

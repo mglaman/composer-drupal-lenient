@@ -10,10 +10,11 @@ jobs:
     name: "verify"
     strategy:
       matrix:
-        drupal:
-          - "10.0.x-dev"
-          - "10.0.0-alpha4"
-          - "^10.0@alpha"
+        include:
+          - drupal: "^10"
+            php: "8.1"
+          - drupal: "^11"
+            php: "8.3"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -21,7 +22,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: none
-          php-version: 8.1
+          php-version: "${{ matrix.php }}"
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
       - name: Setup Drupal
@@ -62,7 +63,7 @@ jobs:
       - name: Setup Drupal
         uses: bluehorndigital/setup-drupal@v1.0.4
         with:
-          version: ^10.0@alpha
+          version: ^10
           path: ~/drupal
           allow_plugins: |
             mglaman/composer-drupal-lenient
@@ -82,6 +83,8 @@ jobs:
   d9_to_d10:
     runs-on: "ubuntu-latest"
     name: "D9 to D10"
+    env:
+      COMPOSER_NO_SECURITY_BLOCKING: 1
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -115,7 +118,7 @@ jobs:
       - name: Upgrade Drupal
         run: |
           cd ~/drupal
-          composer require drupal/core-recommended:^10@alpha drupal/core-dev:^10@alpha drupal/core-composer-scaffold:^10@alpha drupal/core-project-message:^10@alpha drush/drush:^11.0 guzzlehttp/guzzle:^7.0 --with-all-dependencies --no-update
+          composer require drupal/core-recommended:^10 drupal/core-dev:^10 drupal/core-composer-scaffold:^10 drupal/core-project-message:^10 --with-all-dependencies --no-update
           composer update --no-progress --prefer-dist
       - name: Show module
         run: |

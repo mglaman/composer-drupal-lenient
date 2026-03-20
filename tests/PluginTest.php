@@ -14,7 +14,7 @@ use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\RepositoryManager;
-use Composer\Semver\Constraint\Constraint;
+use Composer\Semver\VersionParser;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,7 +39,7 @@ class PluginTest extends TestCase
 
     private function createDrupalModulePackage(string $corePrettyConstraint = '^9'): CompletePackage
     {
-        $coreConstraint = new Constraint('>=', '9.0.0.0');
+        $coreConstraint = (new VersionParser())->parseConstraints($corePrettyConstraint);
         $link = new Link(
             'drupal/simple_module',
             'drupal/core',

@@ -10,7 +10,7 @@ use Composer\Package\Link;
 use Composer\Package\Locker;
 use Composer\Package\RootPackage;
 use Composer\Repository\LockArrayRepository;
-use Composer\Semver\Constraint\Constraint;
+use Composer\Semver\VersionParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,7 +33,7 @@ class LenientLockerTest extends TestCase
 
     private function createRepoWithDrupalModule(): LockArrayRepository
     {
-        $coreConstraint = new Constraint('>=', '9.0.0.0');
+        $coreConstraint = (new VersionParser())->parseConstraints('^9');
         $link = new Link('drupal/simple_module', 'drupal/core', $coreConstraint, Link::TYPE_REQUIRE, '^9');
         $package = new CompletePackage('drupal/simple_module', '1.0.0.0', '1.0.0');
         $package->setType('drupal-module');
@@ -80,7 +80,8 @@ class LenientLockerTest extends TestCase
      */
     public function testGetLockedRepositorySkipsNonApplicablePackages(): void
     {
-        $coreConstraint = new Constraint('>=', '9.0.0.0');
+        $coreConstraint = (new VersionParser())->parseConstraints('^9');
+        $originalConstraintPretty = $coreConstraint->getPrettyString();
         $link = new Link('vendor/library', 'drupal/core', $coreConstraint, Link::TYPE_REQUIRE, '^9');
         $package = new CompletePackage('vendor/library', '1.0.0.0', '1.0.0');
         $package->setType('library');
@@ -100,7 +101,7 @@ class LenientLockerTest extends TestCase
 
         // Non-drupal packages should not have their constraints modified.
         self::assertEquals(
-            '>= 9.0.0.0',
+            $originalConstraintPretty,
             $packages[0]->getRequires()['drupal/core']->getConstraint()->getPrettyString()
         );
     }

@@ -22,10 +22,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Integration tests simulating the `composer why-not` / `prohibits` command flow.
- *
- * These tests replicate what BaseDependencyCommand::doExecute() does internally:
- * it dispatches a COMMAND event (which our plugin hooks into) and then calls
+ * Integration tests exercising the same responsibilities as
+ * BaseDependencyCommand::doExecute(): they dispatch a COMMAND event
+ * (which our plugin hooks into) and then call
  * InstalledRepository::getDependents() with $inverted = true to find prohibitors.
  *
  * @coversDefaultClass \ComposerDrupalLenient\Plugin
@@ -86,7 +85,10 @@ class ProhibitsIntegrationTest extends TestCase
         $composer->setRepositoryManager($repoManager);
         $composer->setLocker($lockerMock);
 
-        // Build InstalledRepository exactly as ProhibitsCommand / BaseDependencyCommand does.
+        // Build an InstalledRepository covering the root and local packages,
+        // matching the core part of BaseDependencyCommand's repository assembly
+        // (locked-repo and platform repos are omitted here as they are not
+        // relevant to this constraint-adjustment test).
         $installedRepo = new InstalledRepository([
             new RootPackageRepository(clone $composer->getPackage()),
             $localRepo,

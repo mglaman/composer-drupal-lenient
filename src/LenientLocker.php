@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace ComposerDrupalLenient;
 
-use Composer\Installer\InstallationManager;
-use Composer\IO\IOInterface;
 use Composer\Json\JsonFile;
 use Composer\Package\Locker;
 use Composer\Package\RootPackageInterface;
 use Composer\Repository\LockArrayRepository;
-use Composer\Util\ProcessExecutor;
 
 /**
  * Wraps a Locker to apply lenient Drupal core constraints to locked packages.

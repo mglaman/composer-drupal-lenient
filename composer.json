@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "ComposerDrupalLenient\\": "src/"
-        }
+        },
+        "files": [
+            "src/autoload.php"
+        ]
     },
     "authors": [
         {

@@ -2,5 +2,8 @@ parameters:
 	level: 9
 	paths:
 		- src
+	excludePaths:
+		- src/Drupal
+		- src/autoload.php
 includes:
 	- vendor/phpstan/phpstan/conf/bleedingEdge.neon

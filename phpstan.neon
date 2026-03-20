@@ -2,7 +2,5 @@ parameters:
 	level: 9
 	paths:
 		- src
-	dynamicConstantNames:
-		- Drupal::VERSION
 includes:
 	- vendor/phpstan/phpstan/conf/bleedingEdge.neon

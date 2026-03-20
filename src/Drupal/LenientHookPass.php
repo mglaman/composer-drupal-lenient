@@ -4,24 +4,32 @@ declare(strict_types=1);
 
 namespace ComposerDrupalLenient\Drupal;
 
-use Drupal;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Injects the system_info_alter hook implementation into Drupal's hook data.
+ * Injects a system_info_alter hook implementation into Drupal's hook system.
  *
- * This pass runs after HookCollectorPass has written '.hook_data' to the
- * container parameters, but before HookCollectorKeyValueWritePass persists
- * it to the key-value store. By directly writing into '.hook_data', we bypass
- * the module-directory scanning in HookCollectorPass.
+ * Supports two hook dispatch mechanisms depending on the Drupal version:
  *
- * The implementation is attributed to 'core' so that ModuleHandler skips the
- * installed-module check at runtime.
+ * Drupal 11.3+ (.hook_data parameter):
+ *   HookCollectorPass writes collected implementations to a '.hook_data'
+ *   container parameter, which HookCollectorKeyValueWritePass later persists
+ *   to the key-value store. We add our implementation directly to that
+ *   parameter, attributed to 'core' to bypass the installed-module check in
+ *   ModuleHandler::getHookImplementationList().
+ *
+ * Drupal 11.2.x (hook_implementations_map parameter):
+ *   HookCollectorPass writes a 'hook_implementations_map' container parameter
+ *   and registers implementations as kernel.event_listener services. We add
+ *   our entry to that map and tag our service accordingly, using 'system' as
+ *   the module name since ModuleHandler::getFlatHookListeners() requires the
+ *   module to be installed and has no 'core' bypass.
  *
  * @see \Drupal\Core\Hook\HookCollectorPass
  * @see \Drupal\Core\Hook\HookCollectorKeyValueWritePass
  * @see \Drupal\Core\Extension\ModuleHandler::getHookImplementationList
+ * @see \Drupal\Core\Extension\ModuleHandler::getFlatHookListeners
  */
 class LenientHookPass implements CompilerPassInterface
 {
@@ -30,31 +38,42 @@ class LenientHookPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        // '.hook_data' was introduced in Drupal 11.3. On earlier versions the
-        // OOP hook pipeline does not exist, so there is nothing to inject into.
-        // @see https://git.drupalcode.org/project/drupal/-/commit/3f1bff4c
-        if (!version_compare(Drupal::VERSION, '11.3', '>=')) {
-            return;
-        }
-
-        // '.hook_data' is set by HookCollectorPass. It may not exist yet during
-        // the Drupal installer's early container builds.
-        if (!$container->hasParameter('.hook_data')) {
-            return;
-        }
-
-        /** @var array{hook_list: array<string, array<string, string>>, preprocess_for_suggestions: array<string, string>, packed_order_operations: array<string, array<int, mixed>>} $hookData */
-        $hookData = $container->getParameter('.hook_data');
-
         $class = LenientHooks::class;
-        $identifier = $class . '::systemInfoAlter';
+        $method = 'systemInfoAlter';
 
-        // Register our implementation under 'core' to bypass the installed
-        // module check in ModuleHandler::getHookImplementationList().
-        $hookData['hook_list']['system_info_alter'][$identifier] = 'core';
+        // Drupal 11.3+: implementations are collected into '.hook_data' by
+        // HookCollectorPass and persisted to keyvalue by
+        // HookCollectorKeyValueWritePass. The parameter may be absent during
+        // early installer container builds, in which case we bail silently.
+        // @see https://git.drupalcode.org/project/drupal/-/commit/3f1bff4c
+        if ($container->hasParameter('.hook_data')) {
+            /** @var array{hook_list: array<string, array<string, string>>, preprocess_for_suggestions: array<string, string>, packed_order_operations: array<string, array<int, mixed>>} $hookData */
+            $hookData = $container->getParameter('.hook_data');
+            $hookData['hook_list']['system_info_alter'][$class . '::' . $method] = 'core';
+            $container->setParameter('.hook_data', $hookData);
+            $this->registerService($container, $class);
+            return;
+        }
 
-        $container->setParameter('.hook_data', $hookData);
+        // Drupal 11.2.x: implementations are stored in 'hook_implementations_map'
+        // and dispatched as kernel.event_listener services. The module name must
+        // be an installed module; 'system' is always present.
+        if ($container->hasParameter('hook_implementations_map')) {
+            /** @var array<string, array<class-string, array<string, string>>> $map */
+            $map = $container->getParameter('hook_implementations_map');
+            $map['system_info_alter'][$class][$method] = 'system';
+            $container->setParameter('hook_implementations_map', $map);
+            $this->registerService($container, $class);
+            $container->findDefinition($class)->addTag('kernel.event_listener', [
+                'event' => 'drupal_hook.system_info_alter',
+                'method' => $method,
+                'priority' => -999,
+            ]);
+        }
+    }
 
+    private function registerService(ContainerBuilder $container, string $class): void
+    {
         if (!$container->hasDefinition($class)) {
             $container->register($class, $class)->setAutowired(true);
         }

@@ -10,9 +10,11 @@ jobs:
     name: "verify"
     strategy:
       matrix:
-        drupal:
-          - "^10"
-          - "^11"
+        include:
+          - drupal: "^10"
+            php: "8.1"
+          - drupal: "^11"
+            php: "8.3"
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -20,7 +22,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: none
-          php-version: 8.1
+          php-version: "${{ matrix.php }}"
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, exif, iconv
       - name: Setup Drupal
@@ -81,6 +83,8 @@ jobs:
   d9_to_d10:
     runs-on: "ubuntu-latest"
     name: "D9 to D10"
+    env:
+      COMPOSER_NO_SECURITY_BLOCKING: 1
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -98,10 +102,6 @@ jobs:
           path: ~/drupal
           allow_plugins: |
             mglaman/composer-drupal-lenient
-      - name: Allow insecure packages for Drupal 9 testing
-        run: |
-          cd ~/drupal
-          composer config --json audit '{"block-insecure": false}'
       - name: Require self
         run: |
           cd ~/drupal

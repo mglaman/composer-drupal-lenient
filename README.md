@@ -13,6 +13,30 @@ See [Add a composer plugin that supports 'composer require-lenient' to support m
 
 Drupal documentation page: [Using Drupal's Lenient Composer Endpoint](https://www.drupal.org/docs/develop/using-composer/using-drupals-lenient-composer-endpoint).
 
+## Before
+Imagine that you are using drupal/token and it is not yet compatible with Drupal 10. You try to upgrade to Drupal 10 via Composer!
+
+```
+composer require drupal/core-recommended:^10 drupal/core-composer-scaffold:^10 --with-all-dependencies
+```
+![image](https://github.com/mglaman/composer-drupal-lenient/assets/539205/a4950149-a7ae-4d03-a786-716ebaa7dee0)
+
+Yikes! You are blocked. You don't want to go and fix the drupal/token module itself. How do you move forward?
+ 
+## After
+
+This thing to the rescue! Run a few commands to add this tool to your composer.json file, and then try again.
+
+```
+composer config repositories.lenient composer https://packages.drupal.org/lenient 
+composer config --merge --json extra.drupal-lenient.allowed-list '["drupal/token"]'
+composer require drupal/core-recommended:^10 drupal/core-composer-scaffold:^10 --with-all-dependencies
+```
+
+Voila! It's basically cheating and letting Composer "I know it's not technically compatible with Drupal 10, just download it anyway"
+There's one more step. You'll need to [patch the info.yml](https://docs.cweagans.net/composer-patches/usage/defining-patches/) file on the contributed module, drupal/token in this case, to ensure that the
+module can remain installed to the Drupal database. It is *very* likely that this patch already exists in the module's issue queue. 
+
 ## How
 
 This subscribes to `PluginEvents::PRE_POOL_CREATE` and filters packages. This is inspired by `symfony/flex`, but it does

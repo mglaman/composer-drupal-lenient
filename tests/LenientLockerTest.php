@@ -47,6 +47,9 @@ class LenientLockerTest extends TestCase
     /**
      * @covers ::__construct
      * @covers ::getLockedRepository
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::applies
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::adjust
      */
     public function testGetLockedRepositoryAdjustsPackageConstraints(): void
     {
@@ -70,7 +73,10 @@ class LenientLockerTest extends TestCase
     }
 
     /**
+     * @covers ::__construct
      * @covers ::getLockedRepository
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::applies
      */
     public function testGetLockedRepositorySkipsNonApplicablePackages(): void
     {
@@ -100,7 +106,9 @@ class LenientLockerTest extends TestCase
     }
 
     /**
+     * @covers ::__construct
      * @covers ::isLocked
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
      */
     public function testDelegatesIsLocked(): void
     {
@@ -112,7 +120,9 @@ class LenientLockerTest extends TestCase
     }
 
     /**
+     * @covers ::__construct
      * @covers ::getPlatformOverrides
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
      */
     public function testDelegatesPlatformOverrides(): void
     {

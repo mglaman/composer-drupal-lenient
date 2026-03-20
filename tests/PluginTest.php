@@ -54,7 +54,11 @@ class PluginTest extends TestCase
     }
 
     /**
+     * @covers ::activate
      * @covers ::onCommand
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::applies
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::adjust
      */
     public function testOnCommandModifiesLocalRepoForProhibitsCommand(): void
     {
@@ -89,7 +93,9 @@ class PluginTest extends TestCase
     }
 
     /**
+     * @covers ::activate
      * @covers ::onCommand
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
      */
     public function testOnCommandDoesNotModifyLocalRepoForOtherCommands(): void
     {
@@ -121,7 +127,10 @@ class PluginTest extends TestCase
     }
 
     /**
+     * @covers ::activate
      * @covers ::onCommand
+     * @covers \ComposerDrupalLenient\LenientLocker::__construct
+     * @covers \ComposerDrupalLenient\PackageRequiresAdjuster::__construct
      */
     public function testOnCommandWrapsLockerWhenLocked(): void
     {

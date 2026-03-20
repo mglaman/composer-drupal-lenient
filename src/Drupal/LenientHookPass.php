@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ComposerDrupalLenient\Drupal;
 
+use Drupal;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -29,6 +30,13 @@ class LenientHookPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
+        // '.hook_data' was introduced in Drupal 11.3. On earlier versions the
+        // OOP hook pipeline does not exist, so there is nothing to inject into.
+        // @see https://git.drupalcode.org/project/drupal/-/commit/3f1bff4c
+        if (!version_compare(Drupal::VERSION, '11.3', '>=')) { // @phpstan-ignore-line
+            return;
+        }
+
         // '.hook_data' is set by HookCollectorPass. It may not exist yet during
         // the Drupal installer's early container builds.
         if (!$container->hasParameter('.hook_data')) {

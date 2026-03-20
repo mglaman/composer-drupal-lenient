@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "ComposerDrupalLenient\\": "src/"
-        }
+        },
+        "files": [
+            "src/autoload.php"
+        ]
     },
     "authors": [
         {
@@ -14,7 +17,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "composer-plugin-api": "^2.0"
     },
     "extra": {
@@ -22,6 +25,7 @@
     },
     "require-dev": {
         "composer/composer": "^2.3",
+        "drupal/core": "^11 || ^12",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.6",
         "phpstan/phpstan-phpunit": "^1.1",
@@ -31,7 +35,8 @@
     },
     "config": {
         "allow-plugins": {
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "drupal/core-composer-scaffold": false
         }
     }
 }

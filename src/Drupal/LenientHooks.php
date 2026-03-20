@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ComposerDrupalLenient\Drupal;
 
+use Composer\InstalledVersions;
 use Drupal\Core\Extension\Extension;
 
 /**
@@ -22,7 +23,7 @@ class LenientHooks
      * NULL means the config has not been read yet. FALSE means no config was
      * found. An array contains the parsed 'drupal-lenient' extra config.
      *
-     * @var array{allow-all?: bool, allowed-list?: list<string>}|false|null
+     * @var array<string, mixed>|false|null
      */
     private static array|false|null $config = null;
 
@@ -48,12 +49,15 @@ class LenientHooks
             return;
         }
 
-        if ($config['allow-all'] ?? false) {
+        if ((bool) ($config['allow-all'] ?? false)) {
             $info['core_incompatible'] = false;
             return;
         }
 
         $allowedList = $config['allowed-list'] ?? [];
+        if (!is_array($allowedList)) {
+            return;
+        }
         $packageName = 'drupal/' . $file->getName();
         if (in_array($packageName, $allowedList, true)) {
             $info['core_incompatible'] = false;
@@ -63,7 +67,7 @@ class LenientHooks
     /**
      * Returns the drupal-lenient config from the root composer.json.
      *
-     * @return array{allow-all?: bool, allowed-list?: list<string>}|false
+     * @return array<string, mixed>|false
      *   The config array or FALSE if not found.
      */
     private static function getLenientConfig(): array|false
@@ -72,11 +76,13 @@ class LenientHooks
             return self::$config;
         }
 
-        // Navigate from vendor/mglaman/composer-drupal-lenient/src/Drupal
-        // up five levels to reach the Composer project root.
-        $rootDir = dirname(__DIR__, 5);
-        $composerJsonPath = $rootDir . '/composer.json';
+        $rootDir = self::findRootDir();
+        if ($rootDir === null) {
+            self::$config = false;
+            return false;
+        }
 
+        $composerJsonPath = $rootDir . '/composer.json';
         if (!file_exists($composerJsonPath)) {
             self::$config = false;
             return false;
@@ -88,9 +94,47 @@ class LenientHooks
             return false;
         }
 
-        /** @var array{extra?: array{drupal-lenient?: array{allow-all?: bool, allowed-list?: list<string>}}}|null $data */
-        $data = json_decode($contents, true);
-        self::$config = $data['extra']['drupal-lenient'] ?? false;
+        try {
+            $data = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            self::$config = false;
+            return false;
+        }
+
+        if (!is_array($data)) {
+            self::$config = false;
+            return false;
+        }
+
+        /** @var array<string, mixed> $data */
+        $extra = $data['extra'] ?? null;
+        if (!is_array($extra)) {
+            self::$config = false;
+            return false;
+        }
+
+        $lenient = $extra['drupal-lenient'] ?? false;
+        /** @var array<string, mixed>|false $lenientConfig */
+        $lenientConfig = is_array($lenient) ? $lenient : false;
+        self::$config = $lenientConfig;
         return self::$config;
+    }
+
+    /**
+     * Locates the Composer project root directory.
+     *
+     * Uses InstalledVersions to find this package's install path, then walks
+     * up three levels ({vendor-dir}/{vendor}/{package} → root). This handles
+     * custom vendor-dir settings correctly, unlike a fixed dirname() count
+     * from __DIR__.
+     */
+    private static function findRootDir(): ?string
+    {
+        $installPath = InstalledVersions::getInstallPath('mglaman/composer-drupal-lenient');
+        if ($installPath !== null) {
+            return dirname($installPath, 3);
+        }
+
+        return null;
     }
 }

@@ -47,9 +47,18 @@ class LenientHookPass implements CompilerPassInterface
         // early installer container builds, in which case we bail silently.
         // @see https://git.drupalcode.org/project/drupal/-/commit/3f1bff4c
         if ($container->hasParameter('.hook_data')) {
-            /** @var array{hook_list: array<string, array<string, string>>, preprocess_for_suggestions: array<string, string>, packed_order_operations: array<string, array<int, mixed>>} $hookData */
             $hookData = $container->getParameter('.hook_data');
-            $hookData['hook_list']['system_info_alter'][$class . '::' . $method] = 'core';
+            if (!is_array($hookData)) {
+                return;
+            }
+            if (!isset($hookData['hook_list']) || !is_array($hookData['hook_list'])) {
+                $hookData['hook_list'] = [];
+            }
+            $hookList = &$hookData['hook_list'];
+            if (!isset($hookList['system_info_alter']) || !is_array($hookList['system_info_alter'])) {
+                $hookList['system_info_alter'] = [];
+            }
+            $hookList['system_info_alter'][$class . '::' . $method] = 'core';
             $container->setParameter('.hook_data', $hookData);
             $this->registerService($container, $class);
             return;

@@ -50,6 +50,7 @@ final class LenientHooksTest extends TestCase
 
     /**
      * @covers ::systemInfoAlter
+     * @covers ::getLenientConfig
      */
     public function testNoConfigDoesNothing(): void
     {
@@ -65,6 +66,7 @@ final class LenientHooksTest extends TestCase
 
     /**
      * @covers ::systemInfoAlter
+     * @covers ::getLenientConfig
      */
     public function testAllowAllSetsCompatible(): void
     {
@@ -80,6 +82,7 @@ final class LenientHooksTest extends TestCase
 
     /**
      * @covers ::systemInfoAlter
+     * @covers ::getLenientConfig
      */
     public function testAllowedListMatchSetsCompatible(): void
     {
@@ -95,6 +98,7 @@ final class LenientHooksTest extends TestCase
 
     /**
      * @covers ::systemInfoAlter
+     * @covers ::getLenientConfig
      */
     public function testAllowedListNoMatchLeavesIncompatible(): void
     {
@@ -110,6 +114,7 @@ final class LenientHooksTest extends TestCase
 
     /**
      * @covers ::systemInfoAlter
+     * @covers ::getLenientConfig
      */
     public function testNonArrayAllowedListDoesNothing(): void
     {

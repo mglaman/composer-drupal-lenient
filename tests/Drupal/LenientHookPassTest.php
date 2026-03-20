@@ -23,6 +23,7 @@ final class LenientHookPassTest extends TestCase
 
     /**
      * @covers ::process
+     * @covers ::registerService
      */
     public function testNeitherParameterPresent(): void
     {
@@ -33,6 +34,7 @@ final class LenientHookPassTest extends TestCase
 
     /**
      * @covers ::process
+     * @covers ::registerService
      */
     public function testHookDataPath(): void
     {
@@ -57,6 +59,7 @@ final class LenientHookPassTest extends TestCase
 
     /**
      * @covers ::process
+     * @covers ::registerService
      */
     public function testHookDataPathInitializesMissingHookList(): void
     {
@@ -85,6 +88,7 @@ final class LenientHookPassTest extends TestCase
 
     /**
      * @covers ::process
+     * @covers ::registerService
      */
     public function testHookImplementationsMapPath(): void
     {
@@ -114,6 +118,7 @@ final class LenientHookPassTest extends TestCase
 
     /**
      * @covers ::process
+     * @covers ::registerService
      */
     public function testExistingServiceNotReRegistered(): void
     {

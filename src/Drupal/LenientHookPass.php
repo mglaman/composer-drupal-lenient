@@ -33,7 +33,7 @@ class LenientHookPass implements CompilerPassInterface
         // '.hook_data' was introduced in Drupal 11.3. On earlier versions the
         // OOP hook pipeline does not exist, so there is nothing to inject into.
         // @see https://git.drupalcode.org/project/drupal/-/commit/3f1bff4c
-        if (!version_compare(Drupal::VERSION, '11.3', '>=')) { // @phpstan-ignore-line
+        if (!version_compare(Drupal::VERSION, '11.3', '>=')) {
             return;
         }
 

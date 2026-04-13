@@ -117,7 +117,7 @@ class PackageRequiresAdjusterTest extends TestCase
             new Constraint('>=', '10.0'),
             new Constraint('>=', '11.0'),
         ]);
-        $originalSimplenewsConstraint = new Constraint('>=', '4.0.0');
+        $originalAdminToolbarConstraint = new Constraint('>=', '3.6.0');
         $package = new CompletePackage('foo', '1.0', '1.0');
         $package->setType('drupal-module');
         $package->setRequires([
@@ -128,12 +128,12 @@ class PackageRequiresAdjusterTest extends TestCase
                 Link::TYPE_REQUIRE,
                 $originalDrupalCoreConstraint->getPrettyString()
             ),
-            'drupal/simplenews' => new Link(
+            'drupal/admin_toolbar' => new Link(
                 'bar',
-                'drupal/simplenews',
-                $originalSimplenewsConstraint,
+                'drupal/admin_toolbar',
+                $originalAdminToolbarConstraint,
                 Link::TYPE_REQUIRE,
-                $originalSimplenewsConstraint->getPrettyString()
+                $originalAdminToolbarConstraint->getPrettyString()
             )
         ]);
         $adjuster->adjust($package);
@@ -142,8 +142,8 @@ class PackageRequiresAdjusterTest extends TestCase
             $package->getRequires()['drupal/core']->getConstraint()->getPrettyString()
         );
         self::assertSame(
-            $originalSimplenewsConstraint,
-            $package->getRequires()['drupal/simplenews']->getConstraint()
+            $originalAdminToolbarConstraint,
+            $package->getRequires()['drupal/admin_toolbar']->getConstraint()
         );
         if ($coreVersion !== null) {
             self::assertTrue(

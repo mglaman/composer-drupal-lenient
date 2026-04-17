@@ -132,7 +132,7 @@ class LenientHooks
     {
         $installPath = InstalledVersions::getInstallPath('mglaman/composer-drupal-lenient');
         if ($installPath !== null) {
-            return dirname($installPath, 3);
+            return dirname(realpath($installPath), 3);
         }
 
         return null;
